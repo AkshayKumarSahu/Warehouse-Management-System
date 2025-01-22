@@ -1,0 +1,99 @@
+{% extends 'warehouse/base.html' %}
+{% load static %}
+{% block title %}Consumption Report{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center text-primary mb-4">
+        <i class="fas fa-chart-bar me-2"></i> Consumption Report
+    </h1>
+
+    <!-- Table Section -->
+    <div class="table-responsive mb-5">
+        <table class="table table-hover table-bordered shadow-sm">
+            <thead class="thead-dark">
+                <tr class="text-center">
+                    <th><i class="fas fa-box-open me-2"></i> Material Name</th>
+                    <th><i class="fas fa-building me-2"></i> Building</th>
+                    <th><i class="fas fa-sort-numeric-up me-2"></i> Quantity</th>
+                    <th><i class="fas fa-calendar-alt me-2"></i> Date</th>
+                    <th><i class="fas fa-comment-alt me-2"></i> Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consumption in consumptions %}
+                
+                    <tr>
+                        <td class="text-primary">{{ consumption.material.name }}</td>
+                        <td class="text-info">{{ consumption.building.name }}</td>
+                        <td class="text-center text-danger">{{ consumption.quantity }}</td>
+                        <td class="text-center text-muted">{{ consumption.date|date:"M d, Y" }}</td>
+                        <td class="text-secondary">{{ consumption.remarks  }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-warning">
+                            <i class="fas fa-exclamation-circle me-2"></i> No consumption records found.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Graph Section -->
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Total Material Issue - Building Wise</h4>
+        </div>
+        <div class="card-body">
+            <canvas id="materialIssueChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('materialIssueChart').getContext('2d');
+
+        // Data for Chart
+        const buildingLabels = {{ building_labels|safe }};
+        const materialQuantities = {{ material_quantities | safe }};
+
+        // Create Chart
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: buildingLabels,
+                datasets: [{
+                    label: 'Material Quantity',
+                    data: materialQuantities,
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantity'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Building'
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

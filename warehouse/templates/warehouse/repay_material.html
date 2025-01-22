@@ -1,0 +1,21 @@
+{% extends 'warehouse/base.html' %}
+
+{% block title %}Repay Material{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-5">Repay Material</h2>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success">Submit Repayment</button>
+    </form>
+</div>
+{% endblock %}

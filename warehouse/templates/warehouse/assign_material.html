@@ -1,0 +1,34 @@
+{% extends 'warehouse/base.html' %}
+
+{% block title %}Assign Material{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-5">Assign Material to Building</h2>
+
+    {% if messages %}
+        <div>
+            {% for message in messages %}
+                <p class="alert alert-info">{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_building">Building</label>
+            {{ form.building }}
+        </div>
+        <div class="form-group">
+            <label for="id_material">Material</label>
+            {{ form.material }}
+        </div>
+        <div class="form-group">
+            <label for="id_quantity">Quantity</label>
+            {{ form.quantity }}
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Assign Material</button>
+    </form>
+</div>
+{% endblock %}

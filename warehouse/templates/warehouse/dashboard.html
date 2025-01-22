@@ -1,0 +1,111 @@
+{% extends 'warehouse/base.html' %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <!-- Welcome Message -->
+            <div class="text-center mb-5">
+                <h2 class="text-dark display-5 fw-bold">{{ welcome_message }}</h2>
+                <p class="text-muted lead">Welcome to the Inventory Management System. Easily track your inventory, manage materials, and handle projects efficiently.</p>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-plus-circle fa-3x text-success mb-3"></i>
+                            <h5 class="card-title fw-bold">Inward</h5>
+                            <a href="{% url 'inward_material' %}" class="btn btn-outline-success btn-sm rounded-pill">Go</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-edit fa-3x text-danger mb-3"></i>
+                            <h5 class="card-title fw-bold">Issue</h5>
+                            <a href="{% url 'issue_material' %}" class="btn btn-outline-danger btn-sm rounded-pill">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-tasks fa-3x text-secondary mb-3"></i>
+                            <h5 class="card-title fw-bold">All Buildings</h5>
+                            <a href="{% url 'building_list' %}" class="btn btn-outline-secondary btn-sm rounded-pill">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-plus-circle fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title fw-bold">Add Material</h5>
+                            <a href="{% url 'add_material' %}" class="btn btn-outline-primary btn-sm rounded-pill">Go</a>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-building fa-3x text-info mb-3"></i>
+                            <h5 class="card-title fw-bold">Add Building</h5>
+                            <a href="{% url 'add_building' %}" class="btn btn-outline-info btn-sm rounded-pill">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-chart-line fa-3x text-dark mb-3"></i>
+                            <h5 class="card-title fw-bold">Consumption Report</h5>
+                            <a href="{% url 'consumption_report' %}" class="btn btn-outline-dark btn-sm rounded-pill">Go</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow border-0 rounded-4 bg-light">
+                        <div class="card-body text-center">
+                            <i class="fas fa-boxes fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title fw-bold">Master Inventory</h5>
+                            <a href="{% url 'view_all_inventory' %}" class="btn btn-outline-warning btn-sm rounded-pill">Go</a>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    }
+    .btn {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+    .row.g-4 > * {
+        margin-top: 1rem; /* Adds space between cards */
+    }
+</style>
+{% endblock %}

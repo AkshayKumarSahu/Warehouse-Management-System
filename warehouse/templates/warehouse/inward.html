@@ -1,0 +1,229 @@
+{% extends 'warehouse/base.html' %}
+{% load custom_filters %}
+{% block title %}Inward Material{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                {% if messages %}
+                    <div class="container my-3">
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="card-header bg-primary text-white text-center rounded-top">
+                    <h4><i class="fas fa-truck-loading me-2"></i> Inward Material</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="inward-form">
+                        {% csrf_token %}
+
+                        <!-- Material Type with Select2 -->
+                        <!-- <div class="form-group mb-4">
+                            <label for="id_material_type" class="fw-bold">
+                                <i class="fas fa-tags me-2 text-success"></i> Material Type
+                            </label>
+                            <select id="id_material_type" name="material_type" class="form-control js-material-type-select border-2 rounded-3 shadow-sm">
+                                <option value="">Select a material type</option>
+                                {% for type in material_types %}
+                                    <option value="{{ type }}">{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div> -->
+                        
+                        <!-- Material Name Dropdown with Select2 -->
+                        <div class="form-group mb-4">
+                            <label for="material_name">
+                                <i class="fas fa-box me-2 text-primary"></i> Material Name
+                            </label>
+                            <select class="js-material-name form-control" id="material_name" name="material"></select>
+                        </div>
+
+                        <!-- Material Details -->
+                        <div id="material-details" class="bg-light p-3 rounded d-none">
+                            <p><strong>Material Type:</strong> <span id="material_type"></span></p>
+                            <p><strong>HSN Code:</strong> <span id="hsn_code"></span></p>
+                            <p><strong>Material Code:</strong> <span id="material_code"></span></p>
+                        </div>
+
+                        <!-- PO Type Selection -->
+                        <div class="form-group mb-4">
+                            <label class="fw-bold d-block">
+                                <i class="fas fa-cogs me-2 text-primary"></i> PO Type
+                            </label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="po_type" id="sap_po" value="SAP" required>
+                                <label class="form-check-label" for="sap_po">SAP PO</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="po_type" id="normal_po" value="Normal" required>
+                                <label class="form-check-label" for="normal_po">Normal PO</label>
+                            </div>
+                        </div>
+
+                        <!-- PO Number -->
+                        <div class="form-group mb-4">
+                            <label for="id_po_number" class="fw-bold">
+                                <i class="fas fa-file-invoice me-2 text-warning"></i> PO Number
+                            </label>
+                            <input type="text" id="id_po_number" name="po_number" class="form-control border-2 rounded-3 shadow-sm" required>
+                            <small id="po-error" class="text-danger d-none">PO Number must start with "4" for SAP PO.</small>
+                        </div>
+
+                        <!-- Supplier -->
+                        <div class="form-group mb-4">
+                            <label for="id_supplier">
+                                <i class="fas fa-industry me-2 text-success"></i> Supplier
+                            </label>
+                            {{ form.supplier|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Building -->
+                        <div class="form-group mb-4">
+                            <label for="id_building">
+                                <i class="fas fa-building me-2 text-info"></i> Building
+                            </label>
+                            {{ form.building|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="form-group mb-4">
+                            <label for="id_quantity">
+                                <i class="fas fa-sort-numeric-up me-2 text-danger"></i> Quantity
+                            </label>
+                            {{ form.quantity|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Date Inward -->
+                        <div class="form-group mb-4">
+                            <label for="id_date_inward">
+                                <i class="fas fa-calendar-alt me-2 text-primary"></i> Date Inward
+                            </label>
+                            {{ form.date_inward|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Expiration Date -->
+                        <div class="form-group mb-4">
+                            <label for="id_expiration_date">
+                                <i class="fas fa-hourglass-end me-2 text-secondary"></i> Expiration Date
+                            </label>
+                            {{ form.expiration_date|add_class:"form-control" }}
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" name="action" value="record" class="btn btn-primary">
+                                <i class="fas fa-save me-2"></i> Record Inward
+                            </button>
+                            <button type="submit" name="action" value="record_another" class="btn btn-secondary">
+                                <i class="fas fa-plus-circle me-2"></i> Save and Record Another
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% if form_errors %}
+                <div class="alert alert-danger">
+                    <strong>Please fix the following errors:</strong>
+                    <ul>
+                        {% for field, errors in form_errors.items %}
+                            <li>{{ field }}: {{ errors|join:", " }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+{% endif %}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.ajaxSetup({
+    headers: { "X-CSRFToken": "{{ csrf_token }}" }
+    });
+    $(document).ready(function () {
+        $.noConflict();
+        // Initialize Select2 for material_name
+        $('.js-material-name').select2({
+            placeholder: 'Search and select material',
+            ajax: {
+                url: "{% url 'search_materials' %}",
+                dataType: 'json',
+                delay: 250,
+                data: function (params) {
+                    return {
+                        term: params.term
+                    };
+                },
+                processResults: function (data) {
+                    return {
+                        results: data.map(item => ({
+                            id: item.id,
+                            text: item.name
+                        }))
+                    };
+                }
+            }
+        });
+
+        // Fetch and display material details
+        $('#material_name').on('change', function () {
+            let materialId = $(this).val();
+            $.ajax({
+                url: "{% url 'get_material_details' %}",
+                data: { material_id: materialId },
+                success: function (data) {
+                    $('#material_type').text(data.material_type);
+                    $('#hsn_code').text(data.hsn_code);
+                    $('#material_code').text(data.material_code);
+                    $('#material-details').removeClass('d-none');
+                },
+                error: function () {
+                    alert('Failed to fetch material details.');
+                }
+            });
+        });
+    });
+
+    //PO Validation
+    document.addEventListener("DOMContentLoaded", function () {
+        const poNumberInput = document.getElementById("id_po_number");
+        const sapPoRadio = document.getElementById("sap_po");
+        const poError = document.getElementById("po-error");
+
+        document.getElementById("inward-form").addEventListener("submit", function (e) {
+            if (sapPoRadio.checked && !poNumberInput.value.startsWith("4")) {
+                poError.classList.remove("d-none");
+                poNumberInput.classList.add("is-invalid");
+                e.preventDefault(); // Prevent form submission
+            } else {
+                poError.classList.add("d-none");
+                poNumberInput.classList.remove("is-invalid");
+            }
+        }); 
+    });
+
+    $(document).ready(function () {
+        
+        $('.js-material-type-select').select2({
+            placeholder: 'Search and select a material type',
+            allowClear: true,
+            width: '100%'
+        });
+    });
+</script>
+<style>
+    .is-invalid {
+        border-color: #dc3545;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23dc3545' viewBox='0 0 12 12'%3e%3cpath d='M5.5 0C2.462 0 0 2.462 0 5.5S2.462 11 5.5 11 11 8.538 11 5.5 8.538 0 5.5 0zm0 1c2.485 0 4.5 2.015 4.5 4.5S7.985 10 5.5 10 1 7.985 1 5.5 3.015 1 5.5 1zM5 3h1v4H5zm0 5h1v1H5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+</style>
+{% endblock %}

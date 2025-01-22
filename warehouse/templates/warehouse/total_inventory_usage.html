@@ -1,0 +1,29 @@
+{% extends 'warehouse/base.html' %}
+
+{% block title %}Total Inventory Usage{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Total Inventory Usage by Building</h1>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Building</th>
+                <th>Total Materials Consumed</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for building in usage_data %}
+                <tr>
+                    <td>{{ building.name }}</td>
+                    <td>{{ building.total_consumption|default:0 }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2" class="text-center">No consumption data available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

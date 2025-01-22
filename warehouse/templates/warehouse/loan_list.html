@@ -1,0 +1,37 @@
+{% extends 'warehouse/base.html' %}
+
+{% block title %}Material Loans{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-5">Material Loans</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Lending Building</th>
+                <th>Borrowing Building</th>
+                <th>Material</th>
+                <th>Quantity</th>
+                <th>Loan Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+                <tr>
+                    <td>{{ loan.lending_building.name }}</td>
+                    <td>{{ loan.borrowing_building.name }}</td>
+                    <td>{{ loan.material.name }}</td>
+                    <td>{{ loan.quantity }}</td>
+                    <td>{{ loan.loan_date }}</td>
+                    <td>{{ loan.status }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No loans recorded.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

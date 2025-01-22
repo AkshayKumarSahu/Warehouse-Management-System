@@ -1,0 +1,84 @@
+{% extends 'warehouse/base.html' %}
+{% load custom_filters %}
+{% block title %}Add New Building{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Card for Add Building Form -->
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-light text-dark text-center rounded-top">
+                    <h4 class="mb-0"><i class="fas fa-building me-2 text-primary"></i> Add New Building</h4>
+                </div>
+                <div class="card-body bg-white">
+                    
+                    <!-- Display success or error messages -->
+                    {% if messages %}
+                        <div class="alert alert-info">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Building Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <!-- Building Name -->
+                        <div class="form-group mb-4">
+                            <label for="id_name" class="fw-bold"><i class="fas fa-home me-2 text-primary"></i> Building Name</label>
+                            {{ form.name|add_class:"form-control border-2 rounded-3" }}
+                        </div>
+
+                        <!-- Location -->
+                        <div class="form-group mb-4">
+                            <label for="id_location" class="fw-bold"><i class="fas fa-map-marker-alt me-2 text-success"></i> Location</label>
+                            {{ form.location|add_class:"form-control border-2 rounded-3" }}
+                        </div>
+
+                        <!-- Project Manager -->
+                        <div class="form-group mb-4">
+                            <label for="id_project_manager" class="fw-bold"><i class="fas fa-user-tie me-2 text-info"></i> Project Manager</label>
+                            {{ form.project_manager|add_class:"form-control border-2 rounded-3" }}
+                        </div>
+
+                        <!-- Date of Incorporation -->
+                        <div class="form-group mb-4">
+                            <label for="id_date_added" class="fw-bold"><i class="fas fa-calendar-alt me-2 text-warning"></i> Date of Incorporation</label>
+                            <div class="input-group date">
+                                {{ form.date_added|add_class:"form-control border-2 rounded-3" }}
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 center" align="center">
+                            <button type="submit" class="btn btn-outline-primary btn-lg rounded-pill shadow-sm">
+                                <i class="  me-2"></i> Save Building
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include FontAwesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+<!-- Bootstrap Datepicker -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+
+<script>
+    $(document).ready(function () {
+        $('.input-group.date').datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true
+        });
+    });
+</script>
+{% endblock %}

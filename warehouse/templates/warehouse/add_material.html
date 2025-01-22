@@ -1,0 +1,117 @@
+{% extends 'warehouse/base.html' %}
+{% load custom_filters %}
+{% block title %}Add New Material{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Card for Add Material Form -->
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-light text-dark text-center rounded-top">
+                    <h4 class="mb-0"><i class="fas fa-box me-2 text-primary"></i> Add Material</h4>
+                </div>
+                <div class="card-body bg-white">
+                    
+                    <!-- Display success or error messages -->
+                    {% if messages %}
+                        <div class="alert alert-info shadow-sm">
+                            {% for message in messages %}
+                                <p>{{ message }}</p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- Material Form -->
+                    <form method="post">
+                        {% csrf_token %}
+
+                        <!-- Material Name -->
+                        <div class="form-group mb-4">
+                            <label for="id_name" class="fw-bold">
+                                <i class="fas fa-box me-2 text-primary"></i> Material Name
+                            </label>
+                            {{ form.name|add_class:"form-control border-2 rounded-3 shadow-sm" }}
+                        </div>
+
+                        <!-- Material Type with Select2 -->
+                        <div class="form-group mb-4">
+                            <label for="id_material_type" class="fw-bold">
+                                <i class="fas fa-tags me-2 text-success"></i> Material Type
+                            </label>
+                            <select id="id_material_type" name="material_type" class="form-control js-material-type-select border-2 rounded-3 shadow-sm">
+                                <option value="">Select a material type</option>
+                                {% for type in material_types %}
+                                    <option value="{{ type }}">{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Material Code -->
+                        
+                        <div class="form-group mb-4">
+                            <label for="id_material_code" class="fw-bold">
+                                <i class="fas fa-qrcode me-2 text-info"></i> Material Code
+                            </label>
+                            {{ form.material_code|add_class:"form-control border-2 rounded-3 shadow-sm"  }}
+                        </div>
+
+                        <!-- HSN Code -->
+                        <div class="form-group mb-4">
+                            <label for="id_hsn_code" class="fw-bold">
+                                <i class="fas fa-barcode me-2 text-danger"></i> HSN Code
+                            </label>
+                            {{ form.hsn_code|add_class:"form-control border-2 rounded-3 shadow-sm" }}
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <button type="submit" name="action" value="save" class="btn btn-outline-primary btn-lg rounded-pill shadow-sm me-2">
+                                <i class="fas fa-save me-2"></i> Save
+                            </button>
+                            <button type="submit" name="action" value="save_add_another" class="btn btn-outline-secondary btn-lg rounded-pill shadow-sm">
+                                <i class="fas fa-plus-circle me-2"></i> Save and Add Another
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    
+    $(document).ready(function () {
+        $.noConflict();
+        $('.js-material-type-select').select2({
+            placeholder: 'Search and select a material type',
+            allowClear: true,
+            width: '100%'
+        });
+
+        // Material code validation
+        const materialCodeInput = document.querySelector('#id_material_code');
+        const form = materialCodeInput.closest('form');
+        form.addEventListener('submit', function (event) {
+            const materialCode = materialCodeInput.value.trim();
+            if (!/^\d{10}$/.test(materialCode)) {
+                event.preventDefault();
+                alert('Material code must be exactly 10 digits.');
+                materialCodeInput.focus();
+            }
+        });
+        
+    });
+</script>
+
+<style>
+    .btn {
+        font-size: 0.95rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+</style>
+{% endblock %}

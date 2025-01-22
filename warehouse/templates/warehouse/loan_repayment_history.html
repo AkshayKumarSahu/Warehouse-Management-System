@@ -1,0 +1,67 @@
+{% extends 'warehouse/base.html' %}
+
+{% block title %}Loan and Repayment History{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h1 class="text-center mb-4">Material Loan and Repayment Histories</h1>
+
+    <!-- Loan History -->
+    <h2 class="mt-5">Loan History</h2>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Lending Building</th>
+                <th>Borrowing Building</th>
+                <th>Material</th>
+                <th>Quantity</th>
+                <th>Loan Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loan in loans %}
+                <tr>
+                    <td>{{ loan.lending_building.name }}</td>
+                    <td>{{ loan.borrowing_building.name }}</td>
+                    <td>{{ loan.material.name }}</td>
+                    <td>{{ loan.quantity }}</td>
+                    <td>{{ loan.loan_date }}</td>
+                    <td>{{ loan.status }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">No loan records found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Repayment History -->
+    <h2 class="mt-5">Repayment History</h2>
+    <table class="table table-hover table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Loan ID</th>
+                <th>Material</th>
+                <th>Quantity Repaid</th>
+                <th>Repayment Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repayment in repayments %}
+                <tr>
+                    <td>{{ repayment.loan.id }}</td>
+                    <td>{{ repayment.loan.material.name }}</td>
+                    <td>{{ repayment.quantity }}</td>
+                    <td>{{ repayment.repayment_date }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">No repayment records found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
