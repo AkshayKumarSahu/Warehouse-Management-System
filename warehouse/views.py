@@ -114,7 +114,6 @@ def view_all_inventory(request):
 
     return render(request, 'warehouse/view_all_inventory.html', {'page_obj': page_obj})
 
-#Add Material View
 
 
 @login_required
@@ -183,7 +182,8 @@ def upload_csv(request):
         form = CSVUploadForm()
 
     return render(request, 'warehouse/upload_csv.html', {'form': form})
-    #Add Building View
+
+#Add Building View
 @login_required
 def add_building(request):
     if request.method == 'POST':
@@ -257,6 +257,7 @@ def search_materials(request):
     materials = Material.objects.filter(name__icontains=term).values('id', 'name')[:10]
     return JsonResponse(list(materials), safe=False)
 
+@login_required
 def inward_material(request):
     material_types = ['Acid Washing', 'Admixtures', 
                       'Aggregates', 'Air Conditioning Wrk', 'Al. window/str. glaz', 'Architect Foreign', 'Architect Local', 'BMS System', 'BMS Systems', 'Blocks', 'Boards and Panels', 'Bricks', 'Cabling Works', 'Carpentry Work', 'Cement - Grey', 'Cement - White', 'CI / DI Covers', 'Civil Work', 'Compound Wall works', 'Concrete', 'Construction Service', 'CP Fittings', 'D.G.Sets', 'Doors and Windows', 'Door Fittings', 'Earth Filling Work', 'Earthwork', 'Electrical Items', 'Electrical work', 'Elevators', 'Fabrication Work', 'Fabrics', 'False Ceiling Work', 'Fencing & Boundary', 'Fire Fighting Sys.', 'Flat Re-purchase', 'Flooring&Dado Tiling', 'Fuels', 'Furniture', 'Gates and Grills', 'General Items', 'GI Covers', 'Glass Works', 'Granite', 'Gypsum Plaster Work', 'Gypsum Vermiculite', 'Hardware', 'Heaters and Coolers', 'Hiring Charges - equ', 'Horticulture', 'Hotel', 'HR', 'H.V.A.C.System', 'Hydropnuematic Sys.', 'Infrastructure Works', 'Interior Items', 'Interior Work', 'Internal Services', 'IT Hardware', 'IT Services', 'IT Software', 'Kitchen Equipments', 'Land Dev. work', 'LandSc.Garden works', 
@@ -290,6 +291,7 @@ def inward_material(request):
 
 
 #View for handling ISSUE of material 
+@login_required
 def issue_material(request):
     if request.method == 'POST':
         form = IssueMaterialForm(request.POST)
@@ -306,36 +308,36 @@ def issue_material(request):
                 .aggregate(Sum('quantity'))['quantity__sum'] or 0
             )
 
-            if quantity > total_quantity:
-                messages.error(request, f"Insufficient stock for {material.name} in {building.name}.")
-            else:
-                # Deduct from stock
-                remaining_quantity = quantity
-                for inward in Inward.objects.filter(building=building, material=material).order_by('date_inward'):
-                    if remaining_quantity <= 0:
-                        break
-                    if inward.quantity >= remaining_quantity:
-                        inward.quantity -= remaining_quantity
-                        inward.save()
-                        remaining_quantity = 0
-                    else:
-                        remaining_quantity -= inward.quantity
-                        inward.quantity = 0
-                        inward.save()
+            # if quantity > total_quantity:
+            #     messages.error(request, f"Insufficient stock for {material.name} in {building.name}.")
+            # else:
+            #     # Deduct from stock
+            #     remaining_quantity = quantity
+            #     for inward in Inward.objects.filter(building=building, material=material).order_by('date_inward'):
+            #         if remaining_quantity <= 0:
+            #             break
+            #         if inward.quantity >= remaining_quantity:
+            #             inward.quantity -= remaining_quantity
+            #             inward.save()
+            #             remaining_quantity = 0
+            #         else:
+            #             remaining_quantity -= inward.quantity
+            #             inward.quantity = 0
+            #             inward.save()
 
-                # Save consumption record
-                MaterialConsumption.objects.create(
-                    building=building,
-                    material=material,
-                    quantity=quantity,
-                    date=issued_material.issue_date,
-                    remarks=remarks
-                )
+            # Save consumption record
+            MaterialConsumption.objects.create(
+                building=building,
+                material=material,
+                quantity=quantity,
+                date=issued_material.issue_date,
+                remarks=remarks
+            )
 
-                # Save issued material
-                issued_material.save()
-                messages.success(request, f"{quantity} units of {material.name} issued to {building.name}.")
-                return redirect('issue_material')
+            # Save issued material
+            issued_material.save()
+            messages.success(request, f"{quantity} units of {material.name} issued to {building.name}.")
+            return redirect('issue_material')
         else:
             messages.error(request, "Please correct the errors below.")
     else:
@@ -357,7 +359,8 @@ def get_material_quantity(request):
         return JsonResponse({'quantity': total_quantity})
     else:
         return JsonResponse({'error': 'Invalid parameters'}, status=400)
-    
+
+#Record Material Consumption View
 def record_consumption(request):
     if request.method == 'POST':
         form = MaterialConsumptionForm(request.POST)
@@ -402,6 +405,7 @@ def get_building_materials(request):
     ]
     return JsonResponse({'materials': response_data})
 
+@login_required
 def consumption_report(request):
     # Fetching material consumptions with related building and material
     consumptions = MaterialConsumption.objects.select_related('building', 'material').all().order_by('-date')

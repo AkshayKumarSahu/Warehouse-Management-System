@@ -17,6 +17,8 @@ urlpatterns = [
     path('buildings/', views.building_list, name='building_list'),
     path('building_materials/<str:building_name>/', views.building_material_list, name='building_materials'),
     path('issue_material/', views.issue_material, name='issue_material'),
+    
+
 
     # Other URL patterns
     path('get_material_details/', views.get_material_details, name='get_material_details'),

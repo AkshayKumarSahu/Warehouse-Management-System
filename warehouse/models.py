@@ -206,18 +206,6 @@ class Inward(models.Model):
         return self.quantity <= threshold
     
 
-#Inventory Model
-class Inventory(models.Model):
-    material = models.ForeignKey(Material, on_delete=models.CASCADE)
-    building = models.ForeignKey(Building, on_delete=models.CASCADE)
-    inward_quantity = models.PositiveIntegerField(default=0)
-    issued_quantity = models.PositiveIntegerField(default=0)
-    available_quantity = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.material.name} - {self.building}"
-
-
 
 
 

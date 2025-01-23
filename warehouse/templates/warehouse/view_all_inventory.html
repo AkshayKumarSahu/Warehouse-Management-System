@@ -41,8 +41,8 @@
                     <th><i class="fas fa-box me-2"></i> Material Name</th>
                     <th><i class="fas fa-tag me-2"></i> Material Type</th>
                     <th><i class="fas fa-building me-2"></i> Building</th>
-                    <!-- <th><i class="fas fa-arrow-circle-down me-2"></i> Inward Quantity</th>
-                    <th><i class="fas fa-arrow-circle-up me-2"></i> Issued Quantity</th> -->
+                    <th><i class="fas fa-arrow-circle-down me-2"></i> Inward Quantity</th>
+                    <th><i class="fas fa-arrow-circle-up me-2"></i> Issued Quantity</th>
                     <th><i class="fas fa-check-circle me-2"></i> Available Quantity</th>
                     <th><i class="fas fa-truck me-2"></i> Supplier</th>
                 </tr>
@@ -53,10 +53,10 @@
                         <td class="text-primary">{{ inward.material.name }}</td>
                         <td class="text-info">{{ inward.material.material_type }}</td>
                         <td class="text-secondary">{{ inward.building.name }}</td>
+                        <!-- <td class="text-center text-success">{{ inward.inward_quantity }}</td> -->
                         <td class="text-center text-success">{{ inward.inward_quantity }}</td>
-                        <!-- <td class="text-center text-success">{{ inward.inward_quantity }}</td>
                         <td class="text-center text-danger">{{ inward.issued_quantity }}</td>
-                        <td class="text-center text-warning">{{ inward.available_quantity }}</td> -->
+                        <td class="text-center text-warning">{{ inward.available_quantity }}</td>
                         <td class="text-success">{{ inward.supplier }}</td>
                     </tr>
                 {% empty %}
