@@ -83,6 +83,7 @@ def view_all_inventory(request):
     search_query = request.GET.get('search', '')
     sort_by = request.GET.get('sort', '')
 
+
     # Fetch inventory items
     inventory = Inward.objects.select_related('material', 'building').all()
 
