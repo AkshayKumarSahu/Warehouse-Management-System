@@ -214,7 +214,15 @@ def assign_material(request):
     return render(request, 'warehouse/assign_material.html', {'form': form})
 
 def building_list(request):
-    buildings = Building.objects.all()
+    query = request.GET.get('q', '')
+    if query:
+        buildings = Building.objects.filter(
+            Q(name__icontains=query) |
+            Q(location__icontains=query) |
+            Q(company__icontains=query)
+        )
+    else:
+        buildings = Building.objects.all()
     return render(request, 'warehouse/building_list.html', {'buildings': buildings})
 
 

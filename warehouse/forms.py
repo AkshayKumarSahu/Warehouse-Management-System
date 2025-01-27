@@ -30,7 +30,7 @@ class BuildingForm(forms.ModelForm):
     date_added = forms.DateField(widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}))
     class Meta:
         model = Building
-        fields = ['name','location','project_manager','date_added']
+        fields = ['name','location','project_manager','date_added','company']
 
 class InwardForm(forms.ModelForm):
     material = forms.ModelChoiceField(

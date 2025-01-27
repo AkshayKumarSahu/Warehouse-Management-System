@@ -19,7 +19,7 @@ class Building(models.Model):
     location = models.CharField(max_length=255)  # Location of the building
     project_manager = models.CharField(max_length=255)  # Name of the project manager
     date_added = models.DateField()  # Date when the building was added to the system
-
+    company = models.CharField(max_length=255)
     def __str__(self):
         return self.name
 
